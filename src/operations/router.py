@@ -1,13 +1,12 @@
-from fastapi.routing import APIRouter
+import json
+
 from fastapi import Depends
+from fastapi.routing import APIRouter
 from sqlalchemy import select, func
-
-from database import get_async_session
-
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from database import get_async_session
 from src.operations.models import Product
-
 
 router = APIRouter(prefix="/operations",
                    tags=["operations"])
@@ -17,11 +16,10 @@ router = APIRouter(prefix="/operations",
 async def get_pages_count(session: AsyncSession = Depends(get_async_session)):
     query = select(func.count(Product.id))
     result = await session.execute(query)
-    result_list = []
-    for row in result.all():
-        result_list.append(row._mapping)
+    result = result.first()
 
-    response = {*result_list}
+    response = {"count": result.count}
+
     return response
 
 
@@ -34,30 +32,41 @@ async def get_products(skip: int,
                    Product.currency_code,
                    Product.discount,
                    Product.title,
-                   Product.description,).limit(per_page).offset(skip)
+                   Product.description,
+                   Product.category).limit(per_page).offset(skip)
     result = await session.execute(query)
-    result_list = []
-    for row in result.all():
-        result_list.append(row._mapping)
+    response = {}
+    # using enumerate for unique product key in response dict
+    for index, item in enumerate(result):
+        data = {"id": item.id,
+                "price": str(item.price),
+                "currency_code": str(item.currency_code),
+                "discount": item.discount,
+                "title": item.title,
+                "description": item.description,
+                "category": str(item.category)}
+        response[f"product{index}"] = data
 
-    response = {"products": result_list}
     return response
 
 
 @router.get("/get_product/{product_id}")
 async def get_product(product_id: int, session: AsyncSession = Depends(get_async_session)):
-    query = select(Product.id,
-                   Product.price,
-                   Product.currency_code,
-                   Product.discount,
-                   Product.title,
-                   Product.description,
-                   Product.category,).where(Product.id == product_id)
-    result = await session.execute(query)
-    result_list = []
-    for row in result.all():
-        result_list.append(row._mapping)
-
-    response = {"product": result_list}
+    stmt = select(Product.id,
+                  Product.price,
+                  Product.currency_code,
+                  Product.discount,
+                  Product.title,
+                  Product.description,
+                  Product.category).where(Product.id == product_id)
+    result = await session.execute(stmt)
+    result = result.first()
+    response = {"id": result.id,
+                "price": result.price,
+                "currency_code": result.currency_code,
+                "discount": result.discount,
+                "title": result.title,
+                "description": result.description,
+                "category": result.category}
 
     return response
