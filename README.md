@@ -16,13 +16,24 @@
 
 - [@Mirtin](https://www.github.com/Mirtin)
 
+## How to run project
 
-## Environment Variables
+step 1:
 
-To run this project, you will need to add the following environment variables to your .env file
+Connect DataBase
 
-`DB_HOST`,`DB_PORT`,`DB_NAME`,`DB_USER`,`DB_PASS`
-to configur database
-and 
-`ENCRYPTION_KEY` for fernet (has to be same as in Gudzyk)
+Configure environment variables `DB_HOST`,`DB_PORT`,`DB_NAME`,`DB_USER`,`DB_PASS` in .env file to configur database
+
+Attention: DataBase has to be PostgreSQL
+
+step 2:
+
+Configure Fernet
+
+Configure environment variable `ENCRYPTION_KEY` in .env file to configure fernet
+
+Attention: `ENCRYPTION_KEY` has to be the same as in ["Gudzik"](//)
+
+
+
 
