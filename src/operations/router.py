@@ -1,3 +1,5 @@
+import json
+
 from fastapi import Depends
 from fastapi.routing import APIRouter
 from sqlalchemy import select, func
@@ -43,6 +45,17 @@ async def get_products(skip: int,
                 "description": item.description,
                 "category": str(item.category)}
         products[f"product{item.id}"] = data
+    response = {}
+    # using enumerate for unique product key in response dict
+    for index, item in enumerate(result):
+        data = {"id": item.id,
+                "price": str(item.price),
+                "currency_code": str(item.currency_code),
+                "discount": item.discount,
+                "title": item.title,
+                "description": item.description,
+                "category": str(item.category)}
+        response[f"product{index}"] = data
 
     response = {}
 

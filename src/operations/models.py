@@ -19,4 +19,3 @@ class Product(Base):
     title = Column("title", String(length=100))
     description = Column("description", String(length=2500))
     category = Column("category", ChoiceType(CATEGORIES))
-

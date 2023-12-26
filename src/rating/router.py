@@ -24,12 +24,8 @@ router = APIRouter(prefix='/rating',
 async def get_average_rating(prod_id: int, session: AsyncSession = Depends(get_async_session)):
     stmt = select(func.avg(Rating.rating).label('average_rating')).where(Rating.prod_id == prod_id)
     result = await session.execute(stmt)
-    keys = result.keys()
-    values = result.scalars()
-    print(values)
-    response = {}
-    for key, value in zip(keys, values):
-        response[key] = value
+    result = result.first()
+    response = {"average_rating": result.average_rating}
 
     return response
 
