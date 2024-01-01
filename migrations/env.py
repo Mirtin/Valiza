@@ -8,7 +8,7 @@ from alembic import context
 from src.config import settings
 from src.operations.models import Base as Operations_base
 from src.rating.models import Base as Rating_base
-from src.auth.models import Base as Auth_base
+
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -30,7 +30,7 @@ if config.config_file_name is not None:
 
 # add your model's MetaData object here
 
-target_metadata = [Auth_base.metadata, Operations_base.metadata, Rating_base.metadata]
+target_metadata = [Operations_base.metadata, Rating_base.metadata]
 
 
 # other values from the config, defined by the needs of env.py,

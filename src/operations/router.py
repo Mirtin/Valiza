@@ -1,5 +1,3 @@
-import json
-
 from fastapi import Depends
 from fastapi.routing import APIRouter
 from sqlalchemy import select, func
